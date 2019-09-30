@@ -74,10 +74,11 @@ function placerBateau(pos,n){
     taille=bateaux[n].taille;
     caseDispo=true
     for(i=0;i<taille;i++){ //Vérifie s'il y a deja un bateau
-		if(sens=="H")
+		if(sens=="H"){
 			if(plateau[pos.caseY][pos.caseX+i]==1){
 				caseDispo=false;
 			}
+		}
 		else {
 			if(plateau[pos.caseY+i][pos.caseX]==1){
 				caseDispo=false;
