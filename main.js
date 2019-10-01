@@ -145,7 +145,7 @@ canvas.onmousedown  = function(event) {
 		pos={caseX,caseY}=(clickToCase(event.pageX-canvas.offsetLeft,event.pageY-canvas.offsetTop));//On récupère les coordonnes du clic
 		if(plateau[pos.caseY][pos.caseX]==1)
 		{
-			BateauTouche(joueurTouche, caseTouchee);
+			//BateauTouche(joueurTouche, caseTouchee);
 			drawCase(pos.caseX,pos.caseY,"blue","red");
 			console.log("Touché!");
 		}
