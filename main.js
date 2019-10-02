@@ -75,12 +75,12 @@ function placerBateau(pos,n){
     caseDispo=true
     for(i=0;i<taille;i++){ //Vérifie s'il y a deja un bateau
 		if(sens=="H"){
-			if(plateau[pos.caseY][pos.caseX+i]==1){
+			if(plateau[pos.caseY][pos.caseX+i]!=0){
 				caseDispo=false;
 			}
 		}
 		else {
-			if(plateau[pos.caseY+i][pos.caseX]==1){
+			if(plateau[pos.caseY+i][pos.caseX]!=0){
 				caseDispo=false;
 			}
 		}
@@ -218,6 +218,7 @@ document.getElementById("sens").onmousedown  = function(event) {
 	if (sens == 'H')
 		sens = 'V';    
 	else sens = 'H';
+	document.getElementById("sens").innerHTML = "SENS : "+sens;
 	coutPlateau();
 }
 
