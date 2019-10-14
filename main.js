@@ -147,15 +147,15 @@ canvas.onmousedown  = function(event) {
 	{
 		pos={caseX,caseY}=(clickToCase(event.pageX-canvas.offsetLeft,event.pageY-canvas.offsetTop));//On récupère les coordonnes du clic
 		if(plateau[pos.caseY][pos.caseX]!=0){
-            if(plateau[pos.caseY][pos.caseX]!=-1){
+            if(plateau[pos.caseY][pos.caseX]!=-1){//Si le bateau n'a pas déja été touché
                 console.log("Touché!");
-                drawCase(pos.caseX,pos.caseY,"blue","red");
+                drawCase(pos.caseX,pos.caseY,"blue","red"); // On colorie en rouge le bateau touché
 
 
-                idBateau=plateau[pos.caseY][pos.caseX];
-                bateau_touche=bateaux[idBateau-1];
+                idBateau=plateau[pos.caseY][pos.caseX];// On récupère l'id du bateau touché
+                bateau_touche=bateaux[idBateau-1]; //On récupère le bateau correspondant dans le tableau de bateaux
 
-                plateau[pos.caseY][pos.caseX]=-1;
+                plateau[pos.caseY][pos.caseX]=-1;//On indique que le bateau est touché dans le tableau
                 //BateauTouche(joueurTouche, caseTouchee);
                 
                 bateau_touche.nbTouche+=1;
