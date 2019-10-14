@@ -18,6 +18,9 @@ let Bateau = class { //Objet bateau
     constructor(taille,couleur) {
         this.taille=taille;
         this.couleur=couleur;
+        this.id=0;
+        this.nbTouche=0;
+        this.sens="H";
     }
 };
 
@@ -72,6 +75,7 @@ function initPlateau(){
 function placerBateau(pos,n){
     couleur=bateaux[n].couleur;
     taille=bateaux[n].taille;
+    bateaux[n].id=n+1;
     caseDispo=true
     for(i=0;i<taille;i++){ //Vérifie s'il y a deja un bateau
 		if(sens=="H"){
@@ -86,27 +90,26 @@ function placerBateau(pos,n){
 		}
 		
     }
-    for(i=0;i<taille;i++){
-		if (caseDispo==true){
+    if (caseDispo==true){
+        bateaux[n].pos=pos
+        
+        for(i=0;i<taille;i++){
 			if(sens=="H"){
-					plateau[pos.caseY][pos.caseX+i]=1;//Place le bateau dans le tableau 2D
-					drawCase(pos.caseX+i,pos.caseY,"blue",couleur);//Dessine le bateau
+                    plateau[pos.caseY][pos.caseX+i]=bateaux[n].id;//Place le bateau dans le tableau 2D
+                    drawCase(pos.caseX+i,pos.caseY,"blue",couleur);//Dessine le bateau
 				}
 			else{
-					plateau[pos.caseY+i][pos.caseX]=1;//Place le bateau dans le tableau 2D
-					drawCase(pos.caseX,pos.caseY+i,"blue",couleur);//Dessine le bateau
-				}
-		}
-    }
+					plateau[pos.caseY+i][pos.caseX]=bateaux[n].id;//Place le bateau dans le tableau 2D
+                    drawCase(pos.caseX,pos.caseY+i,"blue",couleur);//Dessine le bateau
+                }
+        }
+        bateaux[n].sens=sens;
         return caseDispo;    
+    }
 }
-
 //Converti les click en case du tableau
 function clickToCase(x,y){
     return({caseX:Math.floor(x/tailleCaseX),caseY:Math.floor(y/tailleCaseY)});
-    /*for(i=0;i<5;i++){
-        drawCase(caseX+i,caseY,"blue",'rgba(255, 165, 0, 250)');
-    }*/
     //Affiche le contenu de la case correspondante
     //On pourra ensuite traiter le contenu s'il y a un bateau 
 }
@@ -138,16 +141,37 @@ canvas.onmousedown  = function(event) {
 				nBateau+=1;
 			}			
 		}
-		console.log(plateau[pos.caseY][pos.caseX])
+		console.log(plateau)
 	}
     else if (state == "JOUER")
 	{
 		pos={caseX,caseY}=(clickToCase(event.pageX-canvas.offsetLeft,event.pageY-canvas.offsetTop));//On récupère les coordonnes du clic
-		if(plateau[pos.caseY][pos.caseX]==1)
-		{
-			//BateauTouche(joueurTouche, caseTouchee);
-			drawCase(pos.caseX,pos.caseY,"blue","red");
-			console.log("Touché!");
+		if(plateau[pos.caseY][pos.caseX]!=0){
+            if(plateau[pos.caseY][pos.caseX]!=-1){
+                console.log("Touché!");
+                drawCase(pos.caseX,pos.caseY,"blue","red");
+
+
+                idBateau=plateau[pos.caseY][pos.caseX];
+                bateau_touche=bateaux[idBateau-1];
+
+                plateau[pos.caseY][pos.caseX]=-1;
+                //BateauTouche(joueurTouche, caseTouchee);
+                
+                bateau_touche.nbTouche+=1;
+                console.log(bateau_touche)
+
+                if(bateau_touche.nbTouche>=bateau_touche.taille){//Si le bateau est coulé
+                    for(i=0;i<bateau_touche.taille;i++){//On recolorie les cases en noir
+                        if(bateau_touche.sens=='H'){
+                            drawCase(bateau_touche.pos.caseX+i,bateau_touche.pos.caseY,"blue","blue");
+                        }else{
+                            drawCase(bateau_touche.pos.caseX,bateau_touche.pos.caseY+i,"blue","blue");
+                        }
+                    }
+                        
+                }
+            }
 		}
 		else drawCase(pos.caseX,pos.caseY,"blue","aquamarine");
 	}
@@ -252,4 +276,3 @@ buttonBateau.onmousedown  = function(event) {
 - sous marin 3 cases
 - torpilleur 2 cases
 */
-
