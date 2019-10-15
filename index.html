@@ -1,4 +1,13 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+</head>
+
 <h1>BATAILLE NAVALE</h1>
+
+<link rel="stylesheet" href="jeu.css">
 
 <button id="sens">SENS : H</button>
 <button id="valider">VALIDER</button>
@@ -12,3 +21,28 @@
   </canvas>
 
 <script src="main.js"></script>
+
+<br>
+<br>
+<br>
+
+<div class="popup" onclick="fin_partie()">Cliquer ici pour afficher le pop-up<br>
+  <span class="popuptext" id="myPopup"><br>
+	<table id="tab">
+ 	 <tr>
+  	  <th id="case">GAGNÉ !</th>
+ 	 </tr>
+	 <tr>
+     	<td id="case">[Pseudo du joueur]</td>
+     </tr>
+     <tr>
+     	<td id="case">Score : XXX</td>
+     </tr>
+     <tr>
+     	<td><button id="rejouer">Rejouer!</button></td>
+     </tr>
+	</table>
+  </span>
+</div>
+
+</html>

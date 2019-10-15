@@ -276,3 +276,10 @@ buttonBateau.onmousedown  = function(event) {
 - sous marin 3 cases
 - torpilleur 2 cases
 */
+
+
+//Fin de la partie 
+function fin_partie() {
+    var popup = document.getElementById("myPopup");
+    popup.classList.toggle("show");
+}

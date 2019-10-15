@@ -1,6 +1,5 @@
 /* CSS */
 
-
 .popup {
   position: relative;
   display: inline-block;
@@ -19,20 +18,21 @@
   animation: fadeIn 1s
 }
 
-table {
+#tab {
   width:150%;
+  text-align: center;
   border-collapse: collapse;
   background-color:SlateBlue;
   color:white;
   border-radius: 12px;
 }
 
-th, td {
+#case {
   padding: 15px;
   text-align: center;
 }
 
-button {
+#rejouer {
 	background-color:white;
     color:SlateBlue;
     width:40%;
