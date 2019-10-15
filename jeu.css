@@ -1,0 +1,40 @@
+/* CSS */
+
+
+.popup {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+/* pop up caché */
+.popup .popuptext {
+  visibility: hidden;
+}
+
+/* apparition du pop up */
+.popup .show {
+  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s
+}
+
+table {
+  width:150%;
+  border-collapse: collapse;
+  background-color:SlateBlue;
+  color:white;
+  border-radius: 12px;
+}
+
+th, td {
+  padding: 15px;
+  text-align: center;
+}
+
+button {
+	background-color:white;
+    color:SlateBlue;
+    width:40%;
+    font-weight:bold;
+}
