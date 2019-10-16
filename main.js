@@ -285,6 +285,5 @@ function fin_partie() {
 }
 
 //rafaichir la page
-function refresh() { 
-	window.location.reload(false); 
-}
+var refresh = window.getElementById('refresh');
+refresh.addEventListener('click', location.reload(), false);
