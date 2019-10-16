@@ -8,12 +8,14 @@
 
 /* pop up caché */
 .popup .popuptext {
-  visibility: hidden;
+  /*visibility: hidden;*/
+  display: none;
 }
 
 /* apparition du pop up */
 .popup .show {
-  visibility: visible;
+  display: contents;
+  /*visibility: visible;*/
   -webkit-animation: fadeIn 1s;
   animation: fadeIn 1s
 }
