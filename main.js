@@ -283,3 +283,8 @@ function fin_partie() {
     var popup = document.getElementById("myPopup");
     popup.classList.toggle("show");
 }
+
+//rafaichir la page
+function refresh() { 
+	window.location.reload(false); 
+}
