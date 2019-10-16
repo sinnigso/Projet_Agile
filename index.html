@@ -8,18 +8,18 @@
 </head>
 <body>
 <div class="container">
-	<div class="row">
+	<div class="row justify-content-center">
 		<div class="col-sm text-center"><h1 class="display-4">BATAILLE NAVALE</h1></div>
 	</div>
-	<div class="row">
+	<div class="row justify-content-center">
 		<div class="col-sm"><button type="button" class="btn btn-primary" id="valider">VALIDER</button></div>
 		<div class="col-sm"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">PARAMETRES</button></div>
 		<div class="col-sm"><button type="button" class="btn btn-primary" id="sens">SENS : H</button></div>
 		<div class="col-sm"><button type="button" class="btn btn-primary" id="bateau">BATEAU : ---</button></div>
 	</div>
-	<div class="row">
+	<div class="row justify-content-center">
 		<div class="popup">
-		  <span class="popuptext" id="myPopup"><br>
+		  <span class="popuptext" id="myPopup">
 			<table id="tab">
 			 <tr>
 			  <th id="case" class="casetab">GAGNÉ !</th> 
@@ -33,14 +33,15 @@
 			 <tr>
 			 <td id="scoretotal" class="casetab"></td>
 			 </tr>
-			 <tr>
+			 <tr>	
 				<td><button id="rejouer" onClick="window.location.reload();">Rejouer!</button></td>
 			 </tr>
 			</table>
 		  </span>
 		</div>
 	</div>
-	<div class="row">
+	<br>
+	<div class="row justify-content-center">
 		<canvas id="canvas" width="500" height="500">
 		Désolé, votre navigateur ne prend pas en charge &lt;canvas&gt;.
 		</canvas>
