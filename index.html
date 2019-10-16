@@ -7,41 +7,45 @@
 <link rel="stylesheet" href="jeu.css">
 </head>
 <body>
-
-<h1>BATAILLE NAVALE</h1>
-
-<button type="button" class="btn btn-primary" id="valider">VALIDER</button>
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">PARAMETRES</button>
-<button type="button" class="btn btn-primary" id="sens">SENS : H</button>
-<button type="button" class="btn btn-primary" id="bateau">BATEAU : ---</button></br>
-<div class="popup">
-  <span class="popuptext" id="myPopup">
-	<table id="tab">
- 	 <tr>
-  	  <th id="case" class="casetab">GAGNÉ !</th>
- 	 </tr>
-	 <tr>
-     	<td id="pseudo" class="casetab">[Pseudo du joueur]</td>
-     </tr>
-     <tr>
-     	<td id="scoreloupe" class="casetab"></td><br>
-     </tr>
-	 <tr>
-	 <td id="scoretotal" class="casetab"></td>
-	 </tr>
-     <tr>
-     	<td><button id="rejouer" onClick="window.location.reload();">Rejouer!</button></td>
-     </tr>
-	</table>
-  <br>
-  </span>
-</div>		
-<br>
-<canvas id="canvas" width="500" height="500">
-    Désolé, votre navigateur ne prend pas en charge &lt;canvas&gt;.
-  </canvas>
-
-<br>	
+<div class="container">
+	<div class="row">
+		<div class="col-sm text-center"><h1 class="display-4">BATAILLE NAVALE</h1></div>
+	</div>
+	<div class="row">
+		<div class="col-sm"><button type="button" class="btn btn-primary" id="valider">VALIDER</button></div>
+		<div class="col-sm"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">PARAMETRES</button></div>
+		<div class="col-sm"><button type="button" class="btn btn-primary" id="sens">SENS : H</button></div>
+		<div class="col-sm"><button type="button" class="btn btn-primary" id="bateau">BATEAU : ---</button></div>
+	</div>
+	<div class="row">
+		<div class="popup">
+		  <span class="popuptext" id="myPopup"><br>
+			<table id="tab">
+			 <tr>
+			  <th id="case" class="casetab">GAGNÉ !</th> 
+			 </tr>
+			 <tr>
+				<td id="pseudo" class="casetab">[Pseudo du joueur]</td>
+			 </tr>
+			 <tr>
+				<td id="scoreloupe" class="casetab"></td><br>
+			 </tr>
+			 <tr>
+			 <td id="scoretotal" class="casetab"></td>
+			 </tr>
+			 <tr>
+				<td><button id="rejouer" onClick="window.location.reload();">Rejouer!</button></td>
+			 </tr>
+			</table>
+		  </span>
+		</div>
+	</div>
+	<div class="row">
+		<canvas id="canvas" width="500" height="500">
+		Désolé, votre navigateur ne prend pas en charge &lt;canvas&gt;.
+		</canvas>
+	</div>
+</div> <!-- fin container -->	
  
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
