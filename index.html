@@ -13,12 +13,31 @@
 <button id="valider">VALIDER</button>
 <button id="bateau">BATEAU : ---</button></br></br>
 
-<canvas id="canvas" width="500" height="500">
+<div class="popup">
+  <span class="popuptext" id="myPopup"><br>
+	<table id="tab">
+ 	 <tr>
+  	  <th id="case">GAGNÉ !</th>
+ 	 </tr>
+	 <tr>
+     	<td id="case">[Pseudo du joueur]</td>
+     </tr>
+     <tr>
+     	<td id="scoreloupe"></td><br>
+     </tr>
+	 <tr>
+	 <td id="scoretotal">Score : XXX</td>
+	 </tr>
+     <tr>
+     	<td><button id="rejouer" onClick="window.location.reload();">Rejouer!</button></td>
+     </tr>
+	</table>
+  </span>
+</div>
+
+	<canvas id="canvas" width="500" height="500">
     Désolé, votre navigateur ne prend pas en charge &lt;canvas&gt;.
-  </canvas>
-  <canvas id="preview" width="400" height="400">
-    Désolé, votre navigateur ne prend pas en charge &lt;canvas&gt;.
-  </canvas>
+	</canvas>
 
 <script src="main.js"></script>
 
@@ -26,23 +45,6 @@
 <br>
 <br>
 
-<div class="popup" onclick="fin_partie()">Cliquer ici pour afficher le pop-up<br>
-  <span class="popuptext" id="myPopup"><br>
-	<table id="tab">
- 	 <tr>
-  	  <th class="case">GAGNÉ !</th>
- 	 </tr>
-	 <tr>
-     	<td class="case"><input type="submit" name="pseudo"></td>
-     </tr>
-     <tr>
-     	<td class="case">Score : XXX</td>
-     </tr>
-     <tr>
-     	<td class="case"><input type="button" value="Rejouer!" id="refresh"/></td>
-     </tr>
-	</table>
-  </span>
-</div>
+
 
 </html>
