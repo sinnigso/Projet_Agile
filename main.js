@@ -284,6 +284,7 @@ buttonBateau.onmousedown  = function(event) {
 function fin_partie() {
 	document.getElementById("scoreloupe").innerHTML = "Nombre de tir loupés : "+nbtirloupe;
 	document.getElementById("scoretotal").innerHTML = "Nombre de tir totals : "+nbtirtotal;
+	document.getElementById("pseudo").innerHTML = pseudo;
     var popup = document.getElementById("myPopup");
     popup.classList.toggle("show");
 	
