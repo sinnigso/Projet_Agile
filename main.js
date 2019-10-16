@@ -9,6 +9,8 @@ var canvas = document.getElementById("canvas");
 var preview = document.getElementById("preview");
 var tailleCaseX=canvas.width/nbCase;
 var tailleCaseY=canvas.height/nbCase;
+var pseudo = "";
+var mode = "solo";
 var nbcoulee=0;
 var nbplace=0;
 var nbtirloupe=0;
@@ -35,8 +37,6 @@ bateaux.push(new Bateau(3,'orange'));
 bateaux.push(new Bateau(3,'purple'));
 bateaux.push(new Bateau(2,'aquamarine'));
 buttonBateau.innerHTML = "BATEAU : " + bateaux[nBateau].couleur; // Pour le bouton
-
-
 
 //Affiche une case
 function drawCase(i,j,strokeColor,fillColor){
@@ -134,10 +134,10 @@ canvas.onmousedown  = function(event) {
 				//bateaux.splice(nBateau);
 				//nBateau = 0;
 				nBateau+=1;
-				nbplace++;
+				nbplace++;																						
 			}			
 		}
-		console.log(plateau)
+		//console.log(plateau)
 	}
     else if (state == "JOUER")
 	{
@@ -146,6 +146,8 @@ canvas.onmousedown  = function(event) {
             if(plateau[pos.caseY][pos.caseX]!=-1){//Si le bateau n'a pas déja été touché
                 console.log("Touché!");
                 drawCase(pos.caseX,pos.caseY,"blue","red"); // On colorie en rouge le bateau touché
+
+
                 idBateau=plateau[pos.caseY][pos.caseX];// On récupère l'id du bateau touché
                 bateau_touche=bateaux[idBateau-1]; //On récupère le bateau correspondant dans le tableau de bateaux
 
@@ -153,16 +155,16 @@ canvas.onmousedown  = function(event) {
                 //BateauTouche(joueurTouche, caseTouchee);
                 
                 bateau_touche.nbTouche+=1;
-                console.log(bateau_touche)
+                //console.log(bateau_touche)
 
-                if(bateau_touche.nbTouche>=bateau_touche.taille){ //Si le bateau est coulé
+                if(bateau_touche.nbTouche>=bateau_touche.taille){//Si le bateau est coulé
 					nbcoulee++; 
 					if (nbcoulee == nbplace ) {
 						alert("gagné !");
 						fin_partie();
 						//document.write(nbtirloupe);
 						//document.write(nbtirtotal);
-					}						
+					}																	   
                     for(i=0;i<bateau_touche.taille;i++){//On recolorie les cases en noir
                         if(bateau_touche.sens=='H'){
                             drawCase(bateau_touche.pos.caseX+i,bateau_touche.pos.caseY,"blue","blue");
@@ -174,12 +176,15 @@ canvas.onmousedown  = function(event) {
                 }
             }
 		}
-		else { drawCase(pos.caseX,pos.caseY,"blue","aquamarine")
-		nbtirloupe++;
+		else {
+			drawCase(pos.caseX,pos.caseY,"blue","aquamarine");
+			nbtirloupe++;
 		}
 		nbtirtotal++;
+	
 	}
-	console.log(pos.caseY+" "+pos.caseX);
+	//console.log(pos.caseY+" "+pos.caseX);
+
 }
 
 function BateauTouche(joueurTouche, caseTouchee) {
@@ -272,8 +277,6 @@ buttonBateau.onmousedown  = function(event) {
 	else buttonBateau.innerHTML = "BATEAU : ---" ;
 }
 
-
-
 /*Les différents bateaux :
 - porte avion 5 cases
 - croiseur 4 cases
@@ -281,11 +284,13 @@ buttonBateau.onmousedown  = function(event) {
 - sous marin 3 cases
 - torpilleur 2 cases
 */
+
 function fin_partie() {
 	document.getElementById("scoreloupe").innerHTML = "Nombre de tir loupés : "+nbtirloupe;
 	document.getElementById("scoretotal").innerHTML = "Nombre de tir totals : "+nbtirtotal;
-	document.getElementById("pseudo").innerHTML = pseudo;
+	document.getElementById("pseudo").innerHTML = "Joueur : " + pseudo;
     var popup = document.getElementById("myPopup");
     popup.classList.toggle("show");
 	
 }
+

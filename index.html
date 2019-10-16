@@ -3,16 +3,17 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="bootstrap-4.3.1-dist\css\bootstrap.css">
+<link rel="stylesheet" href="jeu.css">
 </head>
+<body>
 
 <h1>BATAILLE NAVALE</h1>
 
-<link rel="stylesheet" href="jeu.css">
-
-<button id="sens">SENS : H</button>
-<button id="valider">VALIDER</button>
-<button id="bateau">BATEAU : ---</button></br></br>
-
+<button type="button" class="btn btn-primary" id="valider">VALIDER</button>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">PARAMETRES</button>
+<button type="button" class="btn btn-primary" id="sens">SENS : H</button>
+<button type="button" class="btn btn-primary" id="bateau">BATEAU : ---</button></br>
 <div class="popup">
   <span class="popuptext" id="myPopup"><br>
 	<table id="tab">
@@ -33,11 +34,72 @@
      </tr>
 	</table>
   </span>
-</div>
-
-	<canvas id="canvas" width="500" height="500">
+</div>		
+<br>
+<canvas id="canvas" width="500" height="500">
     Désolé, votre navigateur ne prend pas en charge &lt;canvas&gt;.
-	</canvas>
+  </canvas>
 
+<br>	
+ 
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">PARAMETRES</h5> <!-- Titre -->
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <!-- bouton fermer dans le coin --> 
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+			<div class="form-group row">
+				<label for="pseudoModal" class="col-md-auto">Pseudo :</label>
+				<input type="text" class="col" id="pseudoModal">
+			</div>
+			
+			<div class="form-group row">
+				<label for="nbrBateau" class="col-md-auto">Nombre de bateau :</label>
+				<input type="text" class="col" id="nbrBateau">
+			</div>
+		
+			<label for="play" class="col-form-label">Mode de jeu :</label>
+			<div id="play" class="form-group row">
+				<div class="col-sm">
+					<input id="solo" checked type="radio" name="players" value="solo"> Joueur VS Ordi
+				</div>
+				<div class="col-sm">
+					<input id="multi" type="radio" name="players" value="multi"> Joueur VS Joueur
+				</div>
+			</div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>-->
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Valider</button>
+      </div>
+    </div>
+  </div>
+</div>
+ 
 <script src="main.js"></script>
-</html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="bootstrap-4.3.1-dist\js\bootstrap.js"></script>
+
+<script>
+ $('#exampleModal').on('hide.bs.modal', function () {    
+	//On change le pseudo
+	if(typeof pseudo !== 'undefined') pseudo = document.getElementById("pseudoModal").value;
+	//On change le mode de jeu
+	if (document.getElementById('solo').checked) {
+		if(typeof mode !== 'undefined') mode = "solo";
+	}
+	if (document.getElementById('multi').checked) {
+		if(typeof mode !== 'undefined') mode = "multi";
+	} 
+})
+</script>
+ 
+
+</body>
+</html> 
