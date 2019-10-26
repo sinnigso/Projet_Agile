@@ -1,79 +1,147 @@
 //Initialisation des variables globales
-var plateau= [];
+//var plateau= [];
+var tab_sens=["H","V"];
 var nbCase=10;
-var nBateau = 0;
 var state = "PLACEMENT" //Etat du jeu ; 
 var sens = 'H'; //Sens des bateaux
 var buttonBateau = document.getElementById("bateau");
-var canvas = document.getElementById("canvas");
-var preview = document.getElementById("preview");
-var tailleCaseX=canvas.width/nbCase;
-var tailleCaseY=canvas.height/nbCase;
-var pseudo = "";
-var mode = "solo";
-var nbcoulee=0;
-var nbplace=0;
-var nbtirloupe=0;
-var nbtirtotal=0;
+var tailleCaseX = document.getElementById("canvas_joueur_1").width/nbCase;
+var tailleCaseY = document.getElementById("canvas_joueur_2").height/nbCase;
+var canvas_joueur_2=document.getElementById("canvas_joueur_2");
+var canvas_joueur_1=document.getElementById("canvas_joueur_1");
+var tour="JOUEUR_2";
+var autreJoueurValide=false;
 
-drawPlateau();//Affichage du plateau
-initPlateau();//Initialisation du tableau 2D
+var audio_goutte = new Audio('goutte.mp3');
+var audio_explosion = new Audio('explosion.mp3');
+//var tailleCaseX=canvas.width/nbCase;
+//var tailleCaseY=canvas.height/nbCase;
 
 let Bateau = class { //Objet bateau
-    constructor(taille,couleur) {
+    constructor(taille,couleur,id) {
         this.taille=taille;
         this.couleur=couleur;
-        this.id=0;
+        this.id=id;
         this.nbTouche=0;
         this.sens="H";
+        this.pos;
+    }
+};
+let Joueur = class { 
+    constructor() {
+        this.pseudo="Joueur"
+        this.nBateau=0;
+        this.nbplace=0;
+        this.nbtirtotal=0;
+        this.nbtirloupe=0;
+        this.bateaux=[];
+        this.nbcoulee=0;
     }
 };
 
-// On met dans le tableau les différents bateaux
-var bateaux=[]
-bateaux.push(new Bateau(5,'pink'));
-bateaux.push(new Bateau(4,'yellow'));
-bateaux.push(new Bateau(3,'orange'));
-bateaux.push(new Bateau(3,'purple'));
-bateaux.push(new Bateau(2,'aquamarine'));
-buttonBateau.innerHTML = "BATEAU : " + bateaux[nBateau].couleur; // Pour le bouton
+var joueur1=new Joueur();
+var joueur2=new Joueur();
 
-//Affiche une case
-function drawCase(i,j,strokeColor,fillColor){
-  var context = canvas.getContext("2d");
-  context.beginPath();
-  context.strokeStyle=strokeColor;
-  context.fillStyle=fillColor;
-  context.lineWidth="2";
-  context.fillRect((canvas.width/nbCase)*i,(canvas.height/nbCase)*j,canvas.width/nbCase,canvas.height/nbCase);//Rempli la case
-  context.strokeRect((canvas.width/nbCase)*i,(canvas.height/nbCase)*j,canvas.width/nbCase,canvas.height/nbCase);//Change le contour
+
+//buttonBateau.innerHTML = "BATEAU : " + bateaux_init[nBateau].couleur; // Pour le bouton
+//drawPlateau();//Affichage du plateau
+//initPlateau();//Initialisation du tableau 2D
+//initPreview();
+
+var typeParti="MULTI";
+if(typeParti=="ROBOT"){
+    initPartiRobot();
 }
-//Dessine le plateau de jeu
-function drawPlateau(){
-    for (j = 0; j < nbCase; j++) {
-        for (i = 0; i < nbCase; i++) {
-            drawCase(i,j,"blue","white");
+else{
+    initPartiDeuxJoueurs();
+}
+
+
+function initPartiRobot(){
+    var plateauJoueur=initPlateau()
+    var plateauRobot=initPlateau()
+    var canvas_joueur=document.getElementById("canvas_joueur_1");
+    var canvas_robot=document.getElementById("canvas_joueur_2");
+    drawPlateau(canvas_joueur);
+    drawPlateau(canvas_robot);
+    placerBateauIA(plateauRobot);
+    evenement(canvas_joueur,plateauJoueur);
+}
+function initPartiDeuxJoueurs(){
+    joueur1=new Joueur();
+    joueur2=new Joueur();
+    
+    joueur1.bateaux=createBateauTab();
+    joueur2.bateaux=createBateauTab();
+
+    var plateauJoueur_1=initPlateau()
+    var plateauJoueur_2=initPlateau()
+    
+    var canvas_joueur_1=document.getElementById("canvas_joueur_1");
+    var canvas_joueur_2=document.getElementById("canvas_joueur_2");
+
+    //canvas_joueur_2.style.cursor="not-allowed";
+    drawPlateau(canvas_joueur_1);
+    drawPlateau(canvas_joueur_2);
+
+    evenement(canvas_joueur_1,plateauJoueur_1,joueur1);
+    evenement(canvas_joueur_2,plateauJoueur_2,joueur2);
+}
+function createBateauTab(){
+    var bateaux_init=[];
+    bateaux_init.push(new Bateau(5,'pink',1));
+    bateaux_init.push(new Bateau(4,'yellow',2));
+    bateaux_init.push(new Bateau(3,'orange',3));
+    bateaux_init.push(new Bateau(3,'purple',4));
+    bateaux_init.push(new Bateau(2,'aquamarine',5));
+    return bateaux_init;
+}
+
+// On met dans le tableau les différents bateaux
+
+function placerBateauIA(plateau){
+    for(var i=0;i<5;i++){
+        do{
+            rand_sens=tab_sens[getRandomIntInclusive(0,1)]
+            if(rand_sens=="H"){
+                rand_x=getRandomIntInclusive(0,nbCase-bateaux[i].taille)
+                rand_y=getRandomIntInclusive(0,9)
+            }else{
+                rand_y=getRandomIntInclusive(0,nbCase-bateaux[i].taille)
+                rand_x=getRandomIntInclusive(0,9)
+            }
+            bateaux[i].sens=rand_sens;
+            pos={caseX:rand_x,caseY:rand_y}
+            console.log(nbCase-bateaux[i].taille)
+        }while(verifCaseDispo(plateau,pos,bateaux[i])==false);
+        console.log(i)
+        placerBateauTableau(plateau,pos,bateaux[i])
+        console.log(plateau)
+    }
+    
+}
+
+function getRandomIntInclusive(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min +1)) + min;
+  }
+
+function placerBateauTableau(plateau,pos,bateau){
+    for(var i=0;i<bateau.taille;i++){ //Vérifie s'il y a deja un bateau
+        if(bateau.sens=="H"){
+            plateau[pos.caseY][pos.caseX+i]=bateau.id;//Place le bateau dans le tableau 2D
+        }
+        else{
+            plateau[pos.caseY+i][pos.caseX]=bateau.id;//Place le bateau dans le tableau 2D
         }
     }
 }
-
-//Initialise le tableau 2D correspondant au plateau
-
-function initPlateau(){
-    for (var i = 0; i < 10; ++i) {
-        plateau.push([0,0,0,0,0,0,0,0,0,0]);
-      }
-}
-
-//Placer les bateaux
-//Pour l'instant ne marche qu'à l'horizontal
-function placerBateau(pos,n){
-    couleur=bateaux[n].couleur;
-    taille=bateaux[n].taille;
-    bateaux[n].id=n+1;
-    caseDispo=true
-    for(i=0;i<taille;i++){ //Vérifie s'il y a deja un bateau
-		if(sens=="H"){
+function verifCaseDispo(plateau,pos,bateau){
+    
+    caseDispo=true;
+    for(var i=0;i<bateau.taille;i++){ //Vérifie s'il y a deja un bateau
+		if(bateau.sens=="H"){
 			if(plateau[pos.caseY][pos.caseX+i]!=0){
 				caseDispo=false;
 			}
@@ -85,155 +153,186 @@ function placerBateau(pos,n){
 		}
 		
     }
-    if (caseDispo==true){
-        bateaux[n].pos=pos
-        
-        for(i=0;i<taille;i++){
-			if(sens=="H"){
-                    plateau[pos.caseY][pos.caseX+i]=bateaux[n].id;//Place le bateau dans le tableau 2D
-                    drawCase(pos.caseX+i,pos.caseY,"blue",couleur);//Dessine le bateau
-				}
-			else{
-					plateau[pos.caseY+i][pos.caseX]=bateaux[n].id;//Place le bateau dans le tableau 2D
-                    drawCase(pos.caseX,pos.caseY+i,"blue",couleur);//Dessine le bateau
-                }
+    console.log(caseDispo)
+    return caseDispo;
+}
+
+//Affiche une case
+function drawCase(canvas,i,j,strokeColor,fillColor){
+  var context = canvas.getContext("2d");
+  context.beginPath();
+  context.strokeStyle=strokeColor;
+  context.fillStyle=fillColor;
+  context.lineWidth="2";
+  context.fillRect((canvas.width/nbCase)*i,(canvas.height/nbCase)*j,canvas.width/nbCase,canvas.height/nbCase);//Rempli la case
+  context.strokeRect((canvas.width/nbCase)*i,(canvas.height/nbCase)*j,canvas.width/nbCase,canvas.height/nbCase);//Change le contour
+}
+function drawContour(canvas,strokeColor){
+    var context = canvas.getContext("2d");
+    context.beginPath();
+    context.strokeStyle=strokeColor;
+    context.lineWidth="9";
+    context.strokeRect(0,0,canvas.width,canvas.height)
+}
+
+
+
+
+//Dessine le plateau de jeu
+function drawPlateau(canvas){
+    for (j = 0; j < nbCase; j++) {
+        for (i = 0; i < nbCase; i++) {
+            drawCase(canvas,i,j,"blue","white");
         }
-        bateaux[n].sens=sens;
-        return caseDispo;    
     }
-}
-//Converti les click en case du tableau
-function clickToCase(x,y){
-    return({caseX:Math.floor(x/tailleCaseX),caseY:Math.floor(y/tailleCaseY)});
-    //Affiche le contenu de la case correspondante
-    //On pourra ensuite traiter le contenu s'il y a un bateau 
+    drawContour(canvas,"blue");
+
 }
 
-function tirer(){
-	
+//Initialise le tableau 2D correspondant au plateau
+
+function initPlateau(){
+    var plateau=[]
+    for (var i = 0; i < 10; ++i) {
+        plateau.push([0,0,0,0,0,0,0,0,0,0]);
+      }
+      return plateau;
 }
-/**
- *
- * Partie Solène bateau touché
- *
- **/
 
-//Detection des évenements
-canvas.onmousedown  = function(event) {
-	if(state == "PLACEMENT") 
-	{
-		if(typeof nBateau=='undefined'){
-			nBateau=0;
-		}
-		event = event || window.event;
-		event.preventDefault();
-		pos={caseX,caseY}=(clickToCase(event.pageX-canvas.offsetLeft,event.pageY-canvas.offsetTop));//On récupère les coordonnes du clic
-		//on place 5 bateaux
-		if(nBateau<bateaux.length){
-			if(placerBateau(pos,nBateau)){
-				//bateaux.splice(nBateau);
-				//nBateau = 0;
-				nBateau+=1;
-				nbplace++;																						
-			}			
-		}
-		//console.log(plateau)
-	}
-    else if (state == "JOUER")
-	{
-		pos={caseX,caseY}=(clickToCase(event.pageX-canvas.offsetLeft,event.pageY-canvas.offsetTop));//On récupère les coordonnes du clic
-		if(plateau[pos.caseY][pos.caseX]!=0){
-            if(plateau[pos.caseY][pos.caseX]!=-1){//Si le bateau n'a pas déja été touché
-                console.log("Touché!");
-                drawCase(pos.caseX,pos.caseY,"blue","red"); // On colorie en rouge le bateau touché
-
-
-                idBateau=plateau[pos.caseY][pos.caseX];// On récupère l'id du bateau touché
-                bateau_touche=bateaux[idBateau-1]; //On récupère le bateau correspondant dans le tableau de bateaux
-
-                plateau[pos.caseY][pos.caseX]=-1;//On indique que le bateau est touché dans le tableau
-                //BateauTouche(joueurTouche, caseTouchee);
-                
-                bateau_touche.nbTouche+=1;
-                //console.log(bateau_touche)
-
-                if(bateau_touche.nbTouche>=bateau_touche.taille){//Si le bateau est coulé
-					nbcoulee++; 
-					if (nbcoulee == nbplace ) {
-						alert("gagné !");
-						fin_partie();
-						//document.write(nbtirloupe);
-						//document.write(nbtirtotal);
-					}																	   
-                    for(i=0;i<bateau_touche.taille;i++){//On recolorie les cases en noir
-                        if(bateau_touche.sens=='H'){
-                            drawCase(bateau_touche.pos.caseX+i,bateau_touche.pos.caseY,"blue","blue");
-                        }else{
-                            drawCase(bateau_touche.pos.caseX,bateau_touche.pos.caseY+i,"blue","blue");
-                        }
-                    }
-                        
-                }
-            }
+//Placer les bateaux
+//Pour l'instant ne marche qu'à l'horizontal
+function placerBateauJoueur(canvas,pos,n,plateau,joueur){
+    couleur=joueur.bateaux[n].couleur;
+    taille=joueur.bateaux[n].taille;
+    caseDispo=true;
+    for(i=0;i<taille;i++){ //Vérifie s'il y a deja un bateau
+		if(sens=="H"){
+			if(plateau[pos.caseY][pos.caseX+i]!=0){
+				caseDispo=false;
+			}
 		}
 		else {
-			drawCase(pos.caseX,pos.caseY,"blue","aquamarine");
-			nbtirloupe++;
+			if(plateau[pos.caseY+i][pos.caseX]!=0){
+				caseDispo=false;
+			}
 		}
-		nbtirtotal++;
-	
-	}
-	//console.log(pos.caseY+" "+pos.caseX);
+    }
+    if (caseDispo==true){
+        joueur.bateaux[n].pos=pos
+        for(i=0;i<taille;i++){
+			if(sens=="H"){
+                    plateau[pos.caseY][pos.caseX+i]=joueur.bateaux[n].id;//Place le bateau dans le tableau 2D
+                    drawCase(canvas,pos.caseX+i,pos.caseY,"blue",couleur);//Dessine le bateau
+				}
+			else{
+					plateau[pos.caseY+i][pos.caseX]=joueur.bateaux[n].id;//Place le bateau dans le tableau 2D
+                    drawCase(canvas,pos.caseX,pos.caseY+i,"blue",couleur);//Dessine le bateau
+                }
+        }
+        joueur.bateaux[n].sens=sens;
+        console.log("Bateau placé")
+    }
+    
+    return caseDispo;
+}
+//Converti les click en case du tableau
 
+function clickToCase(x,y){
+    return({caseX:Math.floor(x/tailleCaseX),caseY:Math.floor(y/tailleCaseY)}); 
 }
 
-function BateauTouche(joueurTouche, caseTouchee) {
-    var test=0;
-    if (VerificationCaseTouchee(caseTouchee)) {
-        alert("Touchée!");
-    }
-    else{
-        for (var i=0; i<joueurTouche.bateau.length; i++) {
-            var bateauTouche = joueurTouche.bateau[i];
-            for (var a=0; a<bateauTouche.casesPrises.length; a++) {
-                var coord = bateauTouche.casesPrises[a];
-                if (caseTouchee == coord){
-                    caseVisee.push(caseTouchee);
-                    bateauTouche.casesDetruites.push(caseTouchee);
-                    if(BateauCoule(bateauTouche.casesPrises, bateauTouche.casesDetruites) == true){
-                        bateauTouche.etat ="Coulé";
-                        alert(bateauTouche.typeB+"Coulé!");
-                        test=1;
-                    }
-                    else {
-                        alert(bateauTouche.typeB+"Touché!");
-                        test=1;
-                    }
+//Detection des évenements
+function evenement(canvas,plateau,joueur){
+    
+    canvas.onmousedown  = function(event) {
+        if(state == "PLACEMENT")
+        {
+            
+            event = event || window.event;
+            event.preventDefault();
+            pos={caseX,caseY}=(clickToCase(event.pageX-canvas.offsetLeft,event.pageY-canvas.offsetTop));//On récupère les coordonnes du clic
+            //on place 5 bateaux
+            if(joueur.nBateau<joueur.bateaux.length){
+                
+                if(placerBateauJoueur(canvas,pos,joueur.nBateau,plateau,joueur)){
+                    joueur.nBateau++;
+                    joueur.nbplace++;
+                   
                 }
             }
         }
-        if (test == 0){
-            caseVisee.push(caseTouchee);
-            alert("*plouf*");
-        }
-    }
-}
-function BateauCoule(tabCaseTouchee, tabCaseDetruite) {
-    if (tabCaseTouchee.length == tabCaseDetruite.length) {
-        tabCaseTouchee.sort();
-        tabCaseDetruite.sort();
-        for (var i=0; i<tabCaseTouchee.length; i++) {
-            if(tabCaseTouchee[i] != tabCaseDetruite[i]) {
-                return false;
-            }
+        else if (state == "JOUER")
+        {
 
+
+            console.log(joueur.bateaux)
+            pos={caseX,caseY}=(clickToCase(event.pageX-canvas.offsetLeft,event.pageY-canvas.offsetTop));//On récupère les coordonnes du clic
+            if(plateau[pos.caseY][pos.caseX]!=-1){//Si la case n'a pas été déja touché
+                joueur.nbtirtotal++;
+                if(plateau[pos.caseY][pos.caseX]!=0){//Si il y a un bateau ->case = 1,2,3,4,5
+                    //audio_explosion.play();
+                    console.log("Touché!");
+                    drawCase(canvas,pos.caseX,pos.caseY,"blue","red"); // On colorie en rouge le bateau touché
+
+                    var idBateau;
+                    idBateau=plateau[pos.caseY][pos.caseX];// On récupère l'id du bateau touché
+                    //bateau_touche=joueur.bateaux[idBateau-1]; //On récupère le bateau correspondant dans le tableau de bateaux
+
+                    plateau[pos.caseY][pos.caseX]=-1;//On indique que le bateau est touché dans le tableau
+                    //BateauTouche(joueurTouche, caseTouchee);
+                    joueur.bateaux[idBateau-1].nbTouche+=1;
+
+                    console.log(joueur.bateaux[idBateau-1].nbTouche)
+                    if(joueur.bateaux[idBateau-1].nbTouche>=joueur.bateaux[idBateau-1].taille){//Si le bateau est coulé
+                        for(i=0;i<joueur.bateaux[idBateau-1].taille;i++){//On recolorie les cases en noir
+                            if(joueur.bateaux[idBateau-1].sens=='H'){
+                                drawCase(canvas,joueur.bateaux[idBateau-1].pos.caseX+i,joueur.bateaux[idBateau-1].pos.caseY,"blue","blue");
+                            }else{
+                                drawCase(canvas,joueur.bateaux[idBateau-1].pos.caseX,joueur.bateaux[idBateau-1].pos.caseY+i,"blue","blue");
+                            }
+                        }
+                        joueur.nbcoulee++; 
+                        if (joueur.nbcoulee == joueur.nbplace ) {
+                            event.stopImmediatePropagation()
+                            alert("gagné !");
+                            if(tour="JOUEUR_1") var joueur_gagnant=joueur1;
+                            else var joueur_gagnant=joueur2;
+                            
+                            fin_partie(joueur_gagnant);
+                        }																	   
+
+                            
+                    }
+                }else {//Si il n'y a pas de bateau -> Case =0 donc vide Tir loupé
+                    //audio_goutte.play();
+                    joueur.nbtirloupe++;
+                    drawCase(canvas,pos.caseX,pos.caseY,"blue","aquamarine");
+                    plateau[pos.caseY][pos.caseX]=-1
+                }
+                //FIN DU TOUR -> Changement de joueur
+                console.log(tour)
+                if(tour=="JOUEUR_2"){
+                    canvas_joueur_1.style.pointerEvents="none";//On bloque le canvas 1
+                    canvas_joueur_2.style.pointerEvents="auto";//On débloque le canvas 2
+                    drawContour(canvas_joueur_2,"green")
+                    drawContour(canvas_joueur_1,"orange")
+                    tour="JOUEUR_1";
+                }
+                else{
+                    canvas_joueur_2.style.pointerEvents="none";
+                    canvas_joueur_1.style.pointerEvents="auto";
+                    drawContour(canvas_joueur_1,"green")
+                    drawContour(canvas_joueur_2,"orange")
+                    tour="JOUEUR_2";
+                }
+
+            }
         }
-        return true;
     }
-    return false;
 }
+
 //cout plateau
-function coutPlateau(){
+function coutPlateau(plateau){
 	var str="";
     for (j = 0; j < nbCase; j++) {
         for (i = 0; i < nbCase; i++) {
@@ -255,15 +354,38 @@ document.getElementById("sens").onmousedown  = function(event) {
 }
 
 
-document.getElementById("valider").onmousedown  = function(event) {
+document.getElementById("validerj1").onmousedown  = function(event) {
+    event = event || window.event;
+    event.preventDefault();
+    drawPlateau(canvas_joueur_1);
+    document.getElementById("validerj1").setAttribute("disabled", true);
+    if(autreJoueurValide==true){
+        state="JOUER";
+	    document.getElementById("sens").setAttribute("disabled", true);
+	    buttonBateau.setAttribute("disabled", true);
+        drawContour(canvas_joueur_1,"green")
+        drawContour(canvas_joueur_2,"orange")
+        canvas_joueur_2.style.pointerEvents="none";
+    }
+    else autreJoueurValide=true;
+    
+}
+document.getElementById("validerj2").onmousedown  = function(event) {
     event = event || window.event;
     event.preventDefault();
 	state="JOUER";
-	document.getElementById("sens").setAttribute("disabled", true);
-	document.getElementById("valider").setAttribute("disabled", true);
+	document.getElementById("validerj2").setAttribute("disabled", true);
 	buttonBateau.setAttribute("disabled", true);
-	drawPlateau();
-	coutPlateau();
+    drawPlateau(canvas_joueur_2);
+    if(autreJoueurValide==true){
+        state="JOUER";
+	    document.getElementById("sens").setAttribute("disabled", true);
+	    buttonBateau.setAttribute("disabled", true);
+        drawContour(canvas_joueur_1,"green")
+        drawContour(canvas_joueur_2,"orange")
+        canvas_joueur_2.style.pointerEvents="none";
+    }
+    else autreJoueurValide=true;
 }
 
 buttonBateau.onmousedown  = function(event) {
@@ -277,6 +399,18 @@ buttonBateau.onmousedown  = function(event) {
 	else buttonBateau.innerHTML = "BATEAU : ---" ;
 }
 
+function fin_partie(joueur) {
+	document.getElementById("scoreloupe").innerHTML = "Nombre de tir loupés : "+joueur.nbtirloupe;
+	document.getElementById("scoretotal").innerHTML = "Nombre de tir totals : "+joueur.nbtirtotal;
+	document.getElementById("pseudo").innerHTML = "Joueur : " + joueur.pseudo;
+    var popup = document.getElementById("myPopup");
+    popup.classList.toggle("show");
+	
+}
+
+
+
+
 /*Les différents bateaux :
 - porte avion 5 cases
 - croiseur 4 cases
@@ -284,13 +418,3 @@ buttonBateau.onmousedown  = function(event) {
 - sous marin 3 cases
 - torpilleur 2 cases
 */
-
-function fin_partie() {
-	document.getElementById("scoreloupe").innerHTML = "Nombre de tir loupés : "+nbtirloupe;
-	document.getElementById("scoretotal").innerHTML = "Nombre de tir totals : "+nbtirtotal;
-	document.getElementById("pseudo").innerHTML = "Joueur : " + pseudo;
-    var popup = document.getElementById("myPopup");
-    popup.classList.toggle("show");
-	
-}
-
