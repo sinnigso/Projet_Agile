@@ -28,8 +28,8 @@ let Bateau = class { //Objet bateau
     }
 };
 let Joueur = class { 
-    constructor() {
-        this.pseudo="Joueur"
+    constructor(pseudo) {
+        this.pseudo=pseudo;
         this.nBateau=0;
         this.nbplace=0;
         this.nbtirtotal=0;
@@ -39,8 +39,8 @@ let Joueur = class {
     }
 };
 
-var joueur1=new Joueur();
-var joueur2=new Joueur();
+var joueur1=new Joueur("Joueur 1");
+var joueur2=new Joueur("Joueur 2");
 
 
 //buttonBateau.innerHTML = "BATEAU : " + bateaux_init[nBateau].couleur; // Pour le bouton
@@ -68,8 +68,8 @@ function initPartiRobot(){
     evenement(canvas_joueur,plateauJoueur);
 }
 function initPartiDeuxJoueurs(){
-    joueur1=new Joueur();
-    joueur2=new Joueur();
+    joueur1=new Joueur("Joueur 1");
+    joueur2=new Joueur("Joueur 2");
     
     joueur1.bateaux=createBateauTab();
     joueur2.bateaux=createBateauTab();
