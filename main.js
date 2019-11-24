@@ -5,10 +5,13 @@ var nbCase=10;
 var state = "PLACEMENT" //Etat du jeu ; 
 var sens = 'H'; //Sens des bateaux
 var buttonBateau = document.getElementById("bateau");
-var tailleCaseX = document.getElementById("canvas_joueur_1").width/nbCase;
-var tailleCaseY = document.getElementById("canvas_joueur_2").height/nbCase;
+//var tailleCaseX = document.getElementById("canvas_joueur_1").width/nbCase;
+//var tailleCaseY = document.getElementById("canvas_joueur_2").height/nbCase;
 var canvas_joueur_2=document.getElementById("canvas_joueur_2");
 var canvas_joueur_1=document.getElementById("canvas_joueur_1");
+var canvas_choix_bateau_1=document.getElementById("canvas_choix_bateau_1");
+var canvas_choix_bateau_2=document.getElementById("canvas_choix_bateau_2");
+
 var tour="JOUEUR_2";
 var autreJoueurValide=false;
 
@@ -58,8 +61,8 @@ else{
 
 
 function initPartiRobot(){
-    var plateauJoueur=initPlateau()
-    var plateauRobot=initPlateau()
+    var plateauJoueur=initPlateau(10)
+    var plateauRobot=initPlateau(10)
     var canvas_joueur=document.getElementById("canvas_joueur_1");
     var canvas_robot=document.getElementById("canvas_joueur_2");
     drawPlateau(canvas_joueur);
@@ -68,25 +71,46 @@ function initPartiRobot(){
     evenement(canvas_joueur,plateauJoueur);
 }
 function initPartiDeuxJoueurs(){
-    joueur1=new Joueur("Joueur 1");
-    joueur2=new Joueur("Joueur 2");
+
     
     joueur1.bateaux=createBateauTab();
     joueur2.bateaux=createBateauTab();
 
-    var plateauJoueur_1=initPlateau()
-    var plateauJoueur_2=initPlateau()
-    
+    var plateauJoueur_1=initPlateau(10)//Tableau de 10x10
+    var plateauJoueur_2=initPlateau(10)
+    var plateauChoixJoueur1=initPlateau(5)
+    var plateauChoixJoueur2=initPlateau(5)
+
+
     var canvas_joueur_1=document.getElementById("canvas_joueur_1");
     var canvas_joueur_2=document.getElementById("canvas_joueur_2");
+    canvas_joueur_1.nbCase=10
+    canvas_joueur_2.nbCase=10
+    canvas_choix_bateau_1.nbCase=5
+    canvas_choix_bateau_2.nbCase=5
+    //var plateau_choix_1
+    drawContour(canvas_choix_bateau_1,"lightblue")
+    drawContour(canvas_choix_bateau_2,"purple")
+
+    joueur1.bateaux.forEach(bateau => {
+        pos={caseX:0,caseY:joueur1.bateaux.indexOf(bateau)}// Pour les afficher en ligne sur le téco
+        drawBateau(bateau,canvas_choix_bateau_1,pos)
+        placerBateauTableau(plateauChoixJoueur1,pos,bateau)
+    });
+    console.log(plateauChoixJoueur1);
+    evenementChoixBateau(canvas_choix_bateau_1,plateauChoixJoueur1,joueur1);
+
+        
 
     //canvas_joueur_2.style.cursor="not-allowed";
     drawPlateau(canvas_joueur_1);
     drawPlateau(canvas_joueur_2);
+    
 
     evenement(canvas_joueur_1,plateauJoueur_1,joueur1);
     evenement(canvas_joueur_2,plateauJoueur_2,joueur2);
 }
+
 function createBateauTab(){
     var bateaux_init=[];
     bateaux_init.push(new Bateau(5,'pink',1));
@@ -156,7 +180,11 @@ function verifCaseDispo(plateau,pos,bateau){
     console.log(caseDispo)
     return caseDispo;
 }
-
+function drawBateau(bateau,canvas,pos){
+    for(var i=0;i<bateau.taille;i++){
+        drawCase(canvas,pos.caseX+i,pos.caseY,"blue",bateau.couleur)
+    }
+}
 //Affiche une case
 function drawCase(canvas,i,j,strokeColor,fillColor){
   var context = canvas.getContext("2d");
@@ -164,8 +192,8 @@ function drawCase(canvas,i,j,strokeColor,fillColor){
   context.strokeStyle=strokeColor;
   context.fillStyle=fillColor;
   context.lineWidth="2";
-  context.fillRect((canvas.width/nbCase)*i,(canvas.height/nbCase)*j,canvas.width/nbCase,canvas.height/nbCase);//Rempli la case
-  context.strokeRect((canvas.width/nbCase)*i,(canvas.height/nbCase)*j,canvas.width/nbCase,canvas.height/nbCase);//Change le contour
+  context.fillRect((canvas.width/canvas.nbCase)*i,(canvas.height/canvas.nbCase)*j,canvas.width/canvas.nbCase,canvas.height/canvas.nbCase);//Rempli la case
+  context.strokeRect((canvas.width/canvas.nbCase)*i,(canvas.height/canvas.nbCase)*j,canvas.width/canvas.nbCase,canvas.height/canvas.nbCase);//Change le contour
 }
 function drawContour(canvas,strokeColor){
     var context = canvas.getContext("2d");
@@ -191,12 +219,13 @@ function drawPlateau(canvas){
 
 //Initialise le tableau 2D correspondant au plateau
 
-function initPlateau(){
+function initPlateau(n){
     var plateau=[]
-    for (var i = 0; i < 10; ++i) {
-        plateau.push([0,0,0,0,0,0,0,0,0,0]);
-      }
-      return plateau;
+    for (var i = 0; i < n; i++) {
+        plateau.push(Array(n).fill(0));
+    }
+    console.log(plateau)
+    return plateau;
 }
 
 //Placer les bateaux
@@ -237,8 +266,20 @@ function placerBateauJoueur(canvas,pos,n,plateau,joueur){
 }
 //Converti les click en case du tableau
 
-function clickToCase(x,y){
+function clickToCase(x,y,tailleCaseX,tailleCaseY){
     return({caseX:Math.floor(x/tailleCaseX),caseY:Math.floor(y/tailleCaseY)}); 
+}
+
+
+//idBateau=plateauChoixJoueur1[pos.caseY][pos.caseX]
+
+
+function evenementChoixBateau(canvas,plateauChoixJoueur,joueur){
+    canvas.onmousedown= function(event){
+        pos=clickToCase(event.pageX-canvas.offsetLeft,event.pageY-canvas.offsetTop,canvas.width/canvas.nbCase,canvas.height/canvas.nbCase)
+        if(plateauChoixJoueur[pos.caseY][pos.caseX]>0){joueur.nBateau=plateauChoixJoueur[pos.caseY][pos.caseX]-1}
+        
+    }
 }
 
 //Detection des évenements
@@ -250,12 +291,14 @@ function evenement(canvas,plateau,joueur){
             
             event = event || window.event;
             event.preventDefault();
-            pos={caseX,caseY}=(clickToCase(event.pageX-canvas.offsetLeft,event.pageY-canvas.offsetTop));//On récupère les coordonnes du clic
+            pos={caseX,caseY}=(clickToCase(event.pageX-canvas.offsetLeft,event.pageY-canvas.offsetTop,canvas.width/canvas.nbCase,canvas.height/canvas.nbCase));//On récupère les coordonnes du clic
             //on place 5 bateaux
-            if(joueur.nBateau<joueur.bateaux.length){
+            if(joueur.nbplace<joueur.bateaux.length){
                 
                 if(placerBateauJoueur(canvas,pos,joueur.nBateau,plateau,joueur)){
                     joueur.nBateau++;
+                    if(joueur.nBateau>=5)joueur.nBateau=0;
+
                     joueur.nbplace++;
                    
                 }
@@ -266,7 +309,7 @@ function evenement(canvas,plateau,joueur){
 
 
             console.log(joueur.bateaux)
-            pos={caseX,caseY}=(clickToCase(event.pageX-canvas.offsetLeft,event.pageY-canvas.offsetTop));//On récupère les coordonnes du clic
+            pos={caseX,caseY}=(clickToCase(event.pageX-canvas.offsetLeft,event.pageY-canvas.offsetTop,canvas.width/canvas.nbCase,canvas.height/canvas.nbCase));//On récupère les coordonnes du clic
             if(plateau[pos.caseY][pos.caseX]!=-1){//Si la case n'a pas été déja touché
                 joueur.nbtirtotal++;
                 if(plateau[pos.caseY][pos.caseX]!=0){//Si il y a un bateau ->case = 1,2,3,4,5
