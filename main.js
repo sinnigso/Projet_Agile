@@ -97,8 +97,15 @@ function initPartiDeuxJoueurs(){
         drawBateau(bateau,canvas_choix_bateau_1,pos)
         placerBateauTableau(plateauChoixJoueur1,pos,bateau)
     });
-    console.log(plateauChoixJoueur1);
+    joueur2.bateaux.forEach(bateau => {
+        pos={caseX:0,caseY:joueur2.bateaux.indexOf(bateau)}// Pour les afficher en ligne sur le téco
+        drawBateau(bateau,canvas_choix_bateau_2,pos)
+        placerBateauTableau(plateauChoixJoueur2,pos,bateau)
+    });
+    drawContour(canvas_choix_bateau_1,"lightblue")
+    drawContour(canvas_choix_bateau_2,"purple")
     evenementChoixBateau(canvas_choix_bateau_1,plateauChoixJoueur1,joueur1);
+    //evenementChoixBateau(canvas_choix_bateau_2,plateauChoixJoueur2,joueur2);
 
         
 
