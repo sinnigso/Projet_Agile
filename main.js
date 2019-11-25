@@ -105,7 +105,7 @@ function initPartiDeuxJoueurs(){
     drawContour(canvas_choix_bateau_1,"lightblue")
     drawContour(canvas_choix_bateau_2,"purple")
     evenementChoixBateau(canvas_choix_bateau_1,plateauChoixJoueur1,joueur1);
-    //evenementChoixBateau(canvas_choix_bateau_2,plateauChoixJoueur2,joueur2);
+    evenementChoixBateau(canvas_choix_bateau_2,plateauChoixJoueur2,joueur2);
 
         
 
