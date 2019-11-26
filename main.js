@@ -59,6 +59,16 @@ else{
     initPartiDeuxJoueurs();
 }
 
+function disable() {
+  var checkBox = document.getElementById("myCheck");
+  if (checkBox.checked == true){
+    audio_explosion.volume=0;
+	audio_goutte.volume=0;
+  } else {
+    audio_explosion.volume=1;
+	audio_goutte.volume=1;
+  }
+}
 
 function initPartiRobot(){
     var plateauJoueur=initPlateau(10)
@@ -72,7 +82,30 @@ function initPartiRobot(){
 }
 function initPartiDeuxJoueurs(){
 
-    
+    proceed = true;
+    while (proceed) {
+        var pseudo = prompt("Joueur 1: Entrez votre pseudo");
+        
+        if (pseudo == null) {
+            alert("Veuillez entrer quelquechose...");
+        }
+        else {
+            joueur1.pseudo = pseudo;
+            break;
+        }
+    }
+
+    while (proceed) {
+        var pseudo = prompt("Joueur 2: Entrez votre pseudo");
+        if (pseudo == null) {
+            alert("Veuillez entrer quelquechose...");
+        }
+        else {
+            joueur2.pseudo = pseudo;
+            break;
+        }
+    }
+
     joueur1.bateaux=createBateauTab();
     joueur2.bateaux=createBateauTab();
 
@@ -320,7 +353,7 @@ function evenement(canvas,plateau,joueur){
             if(plateau[pos.caseY][pos.caseX]!=-1){//Si la case n'a pas été déja touché
                 joueur.nbtirtotal++;
                 if(plateau[pos.caseY][pos.caseX]!=0){//Si il y a un bateau ->case = 1,2,3,4,5
-                    //audio_explosion.play();
+                    audio_explosion.play();
                     console.log("Touché!");
                     drawCase(canvas,pos.caseX,pos.caseY,"blue","red"); // On colorie en rouge le bateau touché
 
@@ -354,7 +387,7 @@ function evenement(canvas,plateau,joueur){
                             
                     }
                 }else {//Si il n'y a pas de bateau -> Case =0 donc vide Tir loupé
-                    //audio_goutte.play();
+                    audio_goutte.play();
                     joueur.nbtirloupe++;
                     drawCase(canvas,pos.caseX,pos.caseY,"blue","aquamarine");
                     plateau[pos.caseY][pos.caseX]=-1
