@@ -147,8 +147,8 @@ function initPartiDeuxJoueurs(){
     drawPlateau(canvas_joueur_2);
     
 
-    evenement(canvas_joueur_1,plateauJoueur_1,joueur1);
-    evenement(canvas_joueur_2,plateauJoueur_2,joueur2);
+    evenement(canvas_joueur_1,plateauJoueur_1,joueur1,joueur2);
+    evenement(canvas_joueur_2,plateauJoueur_2,joueur2,joueur1);
 }
 
 function createBateauTab(){
@@ -323,7 +323,7 @@ function evenementChoixBateau(canvas,plateauChoixJoueur,joueur){
 }
 
 //Detection des évenements
-function evenement(canvas,plateau,joueur){
+function evenement(canvas,plateau,joueur,joueur_adverse){
     
     canvas.onmousedown  = function(event) {
         if(state == "PLACEMENT")
@@ -351,7 +351,7 @@ function evenement(canvas,plateau,joueur){
             console.log(joueur.bateaux)
             pos={caseX,caseY}=(clickToCase(event.pageX-canvas.offsetLeft,event.pageY-canvas.offsetTop,canvas.width/canvas.nbCase,canvas.height/canvas.nbCase));//On récupère les coordonnes du clic
             if(plateau[pos.caseY][pos.caseX]!=-1){//Si la case n'a pas été déja touché
-                joueur.nbtirtotal++;
+                joueur_adverse.nbtirtotal++;
                 if(plateau[pos.caseY][pos.caseX]!=0){//Si il y a un bateau ->case = 1,2,3,4,5
                     audio_explosion.play();
                     console.log("Touché!");
@@ -378,7 +378,7 @@ function evenement(canvas,plateau,joueur){
                         if (joueur.nbcoulee == joueur.nbplace ) {
                             event.stopImmediatePropagation()
                             alert("gagné !");
-                            if(tour="JOUEUR_1") var joueur_gagnant=joueur1;
+                            if(tour=="JOUEUR_1") var joueur_gagnant=joueur1;
                             else var joueur_gagnant=joueur2;
                             
                             fin_partie(joueur_gagnant);
@@ -388,7 +388,7 @@ function evenement(canvas,plateau,joueur){
                     }
                 }else {//Si il n'y a pas de bateau -> Case =0 donc vide Tir loupé
                     audio_goutte.play();
-                    joueur.nbtirloupe++;
+                    joueur_adverse.nbtirloupe++;
                     drawCase(canvas,pos.caseX,pos.caseY,"blue","aquamarine");
                     plateau[pos.caseY][pos.caseX]=-1
                 }
